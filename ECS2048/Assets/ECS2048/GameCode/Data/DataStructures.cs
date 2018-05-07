@@ -1,16 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Unity.Collections;
+using Unity.Entities;
 using UnityEngine;
 
-public class DataStructures : MonoBehaviour {
+public struct PlayerData
+{
+    public ComponentDataArray<PlayerMarker> marker;
+}
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+public struct BlockData
+{
+    public ComponentDataArray<BlockMarker> marker;
 }

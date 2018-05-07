@@ -1,16 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
-public class ComponentTypes : MonoBehaviour {
+public struct PlayerMarker : IComponentData { }
+public struct BlockMarker : IComponentData { }
+public struct ScoreHolder : IComponentData { public int Value; }
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+public struct PlayerInput : IComponentData
+{
+    public float2 Direction;
 }
