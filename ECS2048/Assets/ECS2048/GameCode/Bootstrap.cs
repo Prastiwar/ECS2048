@@ -10,6 +10,7 @@ using System;
 
 public class Bootstrap : MonoBehaviour
 {
+    public static float4 Border { get; private set; }
     public static GameSettings GameSettings { get; private set; }
 
     public static EntityArchetype PlayerArchetype { get; private set; }
@@ -93,6 +94,16 @@ public class Bootstrap : MonoBehaviour
 
     public static void CreateFloor(EntityManager entityManager)
     {
+        var halfGridSize = GameSettings.GridSize / 2;
+        var lastX = GameSettings.GridSize.x - 1;
+        var lastY = GameSettings.GridSize.y - 1;
+        float2 firstFloorPos = -halfGridSize;
+        var LastFloorPos = new float2(lastX + ((lastX * GameSettings.GridGap) - halfGridSize.x),
+                                     lastY + ((lastY * GameSettings.GridGap) - halfGridSize.y));
+        firstFloorPos -= 0.1f; // to be more precise;
+        LastFloorPos += 0.1f;  // to be more precise;
+        Border = new float4(firstFloorPos, LastFloorPos);
+
         Heading defaultHeading = new Heading() { Value = new float3(0.0f, 1.0f, 0) };
         NativeArray<Entity> newEntities = new NativeArray<Entity>(GameSettings.GridSize.x * GameSettings.GridSize.y, Allocator.Temp);
         entityManager.CreateEntity(FloorArchetype, newEntities);

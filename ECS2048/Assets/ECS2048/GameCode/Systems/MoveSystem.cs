@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+[UpdateAfter(typeof(CollisionSystem))]
 public class MoveSystem : JobComponentSystem
 {
     struct Job : IJobProcessComponentData<PlayerInput, Position, BlockMarker>
