@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Unity.Entities;
 using UnityEngine;
 
+[AlwaysUpdateSystem]
 public class UISystem : ComponentSystem
 {
     protected override void OnUpdate()

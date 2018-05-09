@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class PlayerInputSystem : JobComponentSystem
 {
-    private string horizontalAxis = "Horizontal";
-    private string verticalAxis = "Vertical";
+    private readonly string horizontalAxis = "Horizontal";
+    private readonly string verticalAxis = "Vertical";
 
     struct Job : IJobProcessComponentData<PlayerInput>
     {
@@ -16,21 +16,17 @@ public class PlayerInputSystem : JobComponentSystem
 
         public void Execute(ref PlayerInput pInput)
         {
-            var data = pInput;
-
             bool vertical = (canMove.z || canMove.w);
             bool horizontal = (canMove.x || canMove.y);
             float dir = 1 + Bootstrap.GameSettings.GridGap;
 
-            data.Direction.x = horizontal && !vertical
+            pInput.Direction.x = horizontal && !vertical
                 ? canMove.x ? -dir : dir
                 : 0;
 
-            data.Direction.y = vertical && !horizontal
+            pInput.Direction.y = vertical && !horizontal
                 ? canMove.z ? -dir : dir
                 : 0;
-
-            pInput = data;
         }
     }
 
@@ -42,6 +38,6 @@ public class PlayerInputSystem : JobComponentSystem
                                 Input.GetKeyDown(KeyCode.S),
                                 Input.GetKeyDown(KeyCode.W))
     };
-        return job.Schedule(this, 1, inputDeps);
+        return job.Schedule(this, 2, inputDeps);
     }
 }

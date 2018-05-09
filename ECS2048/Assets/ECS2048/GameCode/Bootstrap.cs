@@ -2,11 +2,8 @@
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
-using Unity.Transforms2D;
-using UnityEngine;
-using System.Threading.Tasks;
 using Unity.Collections;
-using System;
+using UnityEngine;
 
 public class Bootstrap : MonoBehaviour
 {
@@ -63,7 +60,6 @@ public class Bootstrap : MonoBehaviour
     private static void CreatePlayer(EntityManager entityManager)
     {
         var player = entityManager.CreateEntity(PlayerArchetype);
-        //entityManager.SetComponentData(player, new PlayerInput());
         entityManager.SetComponentData(player, new ScoreHolder() { Value = 0 });
     }
 
@@ -83,6 +79,7 @@ public class Bootstrap : MonoBehaviour
                 var block = startBlocks[index];
                 var gapY = y * GameSettings.GridGap - (GameSettings.GridSize.y / 2);
                 entityManager.SetComponentData(block, new Position { Value = new float3(x + gapX, y + gapY, -1) });
+                entityManager.SetComponentData(block, new BlockMarker { Value = 2, Destroy = false });
                 entityManager.SetComponentData(block, defaultHeading);
                 entityManager.AddSharedComponentData(block, BlockLook);
                 index++;

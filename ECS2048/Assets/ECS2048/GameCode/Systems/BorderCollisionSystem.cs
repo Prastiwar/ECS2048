@@ -17,13 +17,13 @@ public class BorderCollisionSystem : JobComponentSystem
             var inputVal = data.input[index];
             var actualPos = data.position[index];
             var nextPos = actualPos.Value;
-            nextPos.x += inputVal.Direction.x;
-            nextPos.y += inputVal.Direction.y;
+            nextPos.x += data.input[index].Direction.x;
+            nextPos.y += data.input[index].Direction.y;
 
             if (nextPos.x < border.x || nextPos.x > border.z)
             {
                 inputVal.Direction.x = 0;
-                data.input[index] = inputVal;
+                data.input[index] = inputVal;                
             }
             if (nextPos.y < border.y || nextPos.y > border.w)
             {

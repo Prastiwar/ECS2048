@@ -15,10 +15,17 @@ public struct BlockData
     public ComponentDataArray<BlockMarker> marker;
 }
 
-public struct BlockCollisionData
+public struct BlockRemovalData
 {
     public int Length;
     [ReadOnly] public ComponentDataArray<BlockMarker> marker;
+    [ReadOnly] public EntityArray entity;
+}
+
+public struct BlockCollisionData
+{
+    public int Length;
     [ReadOnly] public ComponentDataArray<Position> position;
+    public ComponentDataArray<BlockMarker> marker;
     public ComponentDataArray<PlayerInput> input;
 }
