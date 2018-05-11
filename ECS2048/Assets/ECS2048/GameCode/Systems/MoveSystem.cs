@@ -6,17 +6,18 @@ using Unity.Transforms;
 [UpdateAfter(typeof(BlockRemovalSystem))]
 public class MoveSystem : JobComponentSystem
 {
-    struct Job : IJobProcessComponentData<PlayerInput, Position, BlockMarker>
+    [ComputeJobOptimization]
+    struct Job : IJobProcessComponentData<Input, Position, BlockMarker>
     {
-        public void Execute(ref PlayerInput input, ref Position pos, ref BlockMarker tag)
+        public void Execute(ref Input input, ref Position pos, ref BlockMarker tag)
         {
-            if (input.Direction.x != 0)
+            if (input.NextStepValue.x != 0)
             {
-                pos.Value.x += input.Direction.x;
+                pos.Value.x += input.NextStepValue.x;
             }
-            if (input.Direction.y != 0)
+            if (input.NextStepValue.y != 0)
             {
-                pos.Value.y += input.Direction.y;
+                pos.Value.y += input.NextStepValue.y;
             }
         }
     }

@@ -7,18 +7,19 @@ public class RemovalBarrier : BarrierSystem { }
 public class BlockRemovalSystem : JobComponentSystem
 {
     [Inject] private RemovalBarrier barrier;
-    [Inject] private BlockRemovalData data;
+    [Inject] private RemovalData data;
 
+    [ComputeJobOptimization]
     struct Job : IJob
     {
-        public BlockRemovalData data;
+        public RemovalData data;
         public EntityCommandBuffer buffer;
 
         public void Execute()
         {
             for (int i = 0; i < data.Length; i++)
             {
-                if (data.marker[i].Destroy)
+                if (data.tag[i].Destroy)
                 {
                     buffer.DestroyEntity(data.entity[i]);
                 }

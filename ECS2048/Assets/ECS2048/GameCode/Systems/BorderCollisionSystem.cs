@@ -2,11 +2,12 @@
 using Unity.Jobs;
 using Unity.Mathematics;
 
-[UpdateAfter(typeof(PlayerInputSystem))]
+[UpdateAfter(typeof(InputSystem))]
 public class BorderCollisionSystem : JobComponentSystem
 {
     [Inject] private BlockCollisionData data;
 
+    [ComputeJobOptimization]
     struct Job : IJobParallelFor
     {
         public BlockCollisionData data;
@@ -17,17 +18,17 @@ public class BorderCollisionSystem : JobComponentSystem
             var inputVal = data.input[index];
             var actualPos = data.position[index];
             var nextPos = actualPos.Value;
-            nextPos.x += data.input[index].Direction.x;
-            nextPos.y += data.input[index].Direction.y;
+            nextPos.x += data.input[index].NextStepValue.x;
+            nextPos.y += data.input[index].NextStepValue.y;
 
             if (nextPos.x < border.x || nextPos.x > border.z)
             {
-                inputVal.Direction.x = 0;
+                inputVal.NextStepValue.x = 0;
                 data.input[index] = inputVal;                
             }
             if (nextPos.y < border.y || nextPos.y > border.w)
             {
-                inputVal.Direction.y = 0;
+                inputVal.NextStepValue.y = 0;
                 data.input[index] = inputVal;
             }
         }

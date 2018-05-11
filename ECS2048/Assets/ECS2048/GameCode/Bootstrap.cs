@@ -4,6 +4,7 @@ using Unity.Rendering;
 using Unity.Transforms;
 using Unity.Collections;
 using UnityEngine;
+using TMPro;
 
 public class Bootstrap : MonoBehaviour
 {
@@ -57,16 +58,41 @@ public class Bootstrap : MonoBehaviour
         GameSettings.HUDCanvas.SetActive(false);
     }
 
+    public static void CreateBlock(EntityManager entityManager, float3 pos, Entity block = default(Entity))
+    {
+        if (block == default(Entity))
+            block = entityManager.CreateEntity(BlockArchetype);
+
+        GameSettings.BlockTexts.Add(CreateTextMeshPro());
+
+        entityManager.SetComponentData(block, new Position { Value = pos });
+        entityManager.SetComponentData(block, new BlockMarker { Value = 2 });
+        entityManager.SetComponentData(block, new Removable { Destroy = false });
+        entityManager.SetComponentData(block, new Heading { Value = new float3(0.0f, 1.0f, 0) });
+        entityManager.SetComponentData(block, new TextUI { Index = GameSettings.BlockTexts.Count - 1 });
+        entityManager.AddSharedComponentData(block, BlockLook);
+    }
+
+    private static TextMeshPro CreateTextMeshPro()
+    {
+        GameObject newText = new GameObject("Block Text", typeof(TextMeshPro));
+        TextMeshPro textMesh = newText.GetComponent<TextMeshPro>();
+        textMesh.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1);
+        textMesh.fontSize = 5;
+        textMesh.alignment = TextAlignmentOptions.Center;
+        textMesh.margin = Vector4.zero;
+        return textMesh;
+    }
+
     private static void CreatePlayer(EntityManager entityManager)
     {
         var player = entityManager.CreateEntity(PlayerArchetype);
-        entityManager.SetComponentData(player, new ScoreHolder() { Value = 0 });
+        entityManager.SetComponentData(player, new ScoreHolder() { Score = 0 });
     }
 
     private static void CreateBlocks(EntityManager entityManager)
     {
         int startBlocksLength = 2;
-        Heading defaultHeading = new Heading() { Value = new float3(0.0f, 1.0f, 0) };
         NativeArray<Entity> startBlocks = new NativeArray<Entity>(startBlocksLength, Allocator.Temp);
         entityManager.CreateEntity(BlockArchetype, startBlocks);
 
@@ -78,10 +104,8 @@ public class Bootstrap : MonoBehaviour
             {
                 var block = startBlocks[index];
                 var gapY = y * GameSettings.GridGap - (GameSettings.GridSize.y / 2);
-                entityManager.SetComponentData(block, new Position { Value = new float3(x + gapX, y + gapY, -1) });
-                entityManager.SetComponentData(block, new BlockMarker { Value = 2, Destroy = false });
-                entityManager.SetComponentData(block, defaultHeading);
-                entityManager.AddSharedComponentData(block, BlockLook);
+                float3 pos = new float3(x + gapX, y + gapY, -1);
+                CreateBlock(entityManager, pos, block);
                 index++;
             }
         }
@@ -89,7 +113,7 @@ public class Bootstrap : MonoBehaviour
         startBlocks.Dispose();
     }
 
-    public static void CreateFloor(EntityManager entityManager)
+    private static void CreateFloor(EntityManager entityManager)
     {
         var halfGridSize = GameSettings.GridSize / 2;
         var lastX = GameSettings.GridSize.x - 1;
@@ -113,10 +137,17 @@ public class Bootstrap : MonoBehaviour
             {
                 var floor = newEntities[index];
                 var gapY = y * GameSettings.GridGap - (GameSettings.GridSize.y / 2);
-                entityManager.SetComponentData(floor, new Position { Value = new float3(x + gapX, y + gapY, 0) });
+                float3 pos = new float3(x + gapX, y + gapY, 0);
+                entityManager.SetComponentData(floor, new Position { Value = pos });
+                entityManager.SetComponentData(floor, new FloorMarker { Pos = pos, IsFree = true });
                 entityManager.SetComponentData(floor, defaultHeading);
                 entityManager.AddSharedComponentData(floor, FloorLook);
                 index++;
+
+                if (y == 0)
+                {
+
+                }
             }
         }
         newEntities.Dispose();
@@ -125,9 +156,12 @@ public class Bootstrap : MonoBehaviour
     private static void SetArchetypes(EntityManager entityManager)
     {
         var scoreHolder = ComponentType.Create<ScoreHolder>();
-        var playerInput = ComponentType.Create<PlayerInput>();
+        var playerInput = ComponentType.Create<Input>();
         var playerTag = ComponentType.Create<PlayerMarker>();
         var blockTag = ComponentType.Create<BlockMarker>();
+        var floorTag = ComponentType.Create<FloorMarker>();
+        var removeTag = ComponentType.Create<Removable>();
+        var textTag = ComponentType.Create<TextUI>();
         var heading = ComponentType.Create<Heading>();
         var position = ComponentType.Create<Position>();
         var transformMatrix = ComponentType.Create<TransformMatrix>();
@@ -137,11 +171,11 @@ public class Bootstrap : MonoBehaviour
             );
 
         BlockArchetype = entityManager.CreateArchetype(
-            position, transformMatrix, heading, playerInput, blockTag
+            position, transformMatrix, heading, playerInput, blockTag, removeTag, textTag
             );
 
         FloorArchetype = entityManager.CreateArchetype(
-            position, transformMatrix, heading
+            position, transformMatrix, heading, floorTag
             );
     }
 

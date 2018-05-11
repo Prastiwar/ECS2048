@@ -1,10 +1,13 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameSettings : MonoBehaviour
 {
+    public List<TextMeshPro> BlockTexts = new List<TextMeshPro>();
+
     [Header("Hud References")]
     public TextMeshProUGUI ScoreText;
     [Header("Canvas References")]

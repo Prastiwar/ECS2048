@@ -7,9 +7,18 @@ using UnityEngine;
 [AlwaysUpdateSystem]
 public class UISystem : ComponentSystem
 {
+    [Inject] private TextData data;
     protected override void OnUpdate()
     {
-
+        for (int i = 0; i < data.Length; i++)
+        {
+            int index = data.text[i].Index;
+            var pos = data.position[i].Value;
+            pos.z = -2;
+            Bootstrap.GameSettings.BlockTexts[index].transform.position = pos;
+            Bootstrap.GameSettings.BlockTexts[index].text = data.marker[i].Value.ToString();
+        }
+        
     }
 
     public void SetupUI(System.Action playNewGame)
