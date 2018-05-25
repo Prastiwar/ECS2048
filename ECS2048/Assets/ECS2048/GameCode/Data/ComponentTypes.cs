@@ -3,13 +3,36 @@ using Unity.Mathematics;
 using UnityEngine;
 
 public struct PlayerMarker : IComponentData { }
-public struct BlockMarker : IComponentData { public int Value; }
 public struct TextUI : IComponentData { public int Index; }
-public struct Removable : IComponentData { public bool1 Destroy; }
-public struct FloorMarker : IComponentData { public float3 Pos; public bool1 IsFree; }
+public struct FloorMarker : IComponentData { }
 public struct ScoreHolder : IComponentData { public int Score; }
+public struct Input : IComponentData { public int2 Value; }
 
-public struct Input : IComponentData
+public struct MoveDirection
 {
-    public float2 NextStepValue;
+    public const int Up = 0;
+    public const int Left = 1;
+    public const int Down = 2;
+    public const int Right = 3;
+}
+
+public struct Block : IComponentData
+{
+    public int Value;
+    public int SelfIndex;
+    public int2 PosIndex;
+    public int2 NextBlockIndex;
+    public int2 PrevBlockIndex;
+
+    public static Block Null {
+        get {
+            return new Block() {
+                SelfIndex = -1,
+                NextBlockIndex = -1,
+                PrevBlockIndex = -1,
+                Value = -1,
+                PosIndex = -1
+            };
+        }
+    }
 }

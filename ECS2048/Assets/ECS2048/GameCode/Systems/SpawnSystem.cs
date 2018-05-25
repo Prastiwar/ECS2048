@@ -4,32 +4,24 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
+using System.Linq;
+using UnityEngine;
 
 [UpdateAfter(typeof(MoveSystem))]
 public class SpawnSystem : ComponentSystem
 {
-    [Inject] private SpawnData spawnData;
-    [Inject] private FloorData floorData;
+    [Inject] private PlayerData playerData;
 
     protected override void OnUpdate()
     {
-        if (spawnData.input[0].NextStepValue.x != 0 || spawnData.input[0].NextStepValue.y != 0)
+        if (playerData.input[0].Value.x != 0 || playerData.input[0].Value.y != 0)
         {
-            for (int i = 0; i < floorData.Length; i++)
-            {
-                if (floorData.marker[i].IsFree)
-                {
-                    var puc = PostUpdateCommands;
-                    var tag = floorData.marker[i];
-                    tag.IsFree = false;
-                    floorData.marker[i] = tag;
+            var input = playerData.input[0];
 
-                    Bootstrap.CreateBlock(EntityManager, tag.Pos);
-                    return;
-                }
-            }
+            //int randIndex = Random.Range(0, length);
+            //Bootstrap.CreateBlock(EntityManager, freeFloor.ElementAt(randIndex).GridIndex);
 
-            // there are no free floor, probably game over
+            // there is no free space - gameover probably
 
         }
     }

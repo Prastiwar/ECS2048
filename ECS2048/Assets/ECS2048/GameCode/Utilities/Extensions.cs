@@ -1,8 +1,8 @@
-﻿
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 
-static class Extensions
+public static class Extensions
 {
     public static void DestroyAllEntities(this EntityManager manager)
     {

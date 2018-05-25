@@ -13,10 +13,13 @@ public class UISystem : ComponentSystem
         for (int i = 0; i < data.Length; i++)
         {
             int index = data.text[i].Index;
-            var pos = data.position[i].Value;
-            pos.z = -2;
-            Bootstrap.GameSettings.BlockTexts[index].transform.position = pos;
-            Bootstrap.GameSettings.BlockTexts[index].text = data.marker[i].Value.ToString();
+            if (index >= 0)
+            {
+                var pos = data.position[i].Value;
+                pos.z = -1; // it's in front of block
+                Bootstrap.GameSettings.BlockTexts[index].transform.position = pos;
+                Bootstrap.GameSettings.BlockTexts[index].text = data.block[i].Value.ToString();
+            }
         }
         
     }
