@@ -11,7 +11,7 @@ namespace TP.ECS2048
         [ComputeJobOptimization]
         public struct Job : IJobProcessComponentData<Block, Position>
         {
-            public void Execute([ReadOnly]ref Block block, ref Position pos)
+            public void Execute([ReadOnly] ref Block block, ref Position pos)
             {
                 pos.Value.z = math.select(-1, 1, block.Value == 0);
             }

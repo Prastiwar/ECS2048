@@ -20,5 +20,17 @@ namespace TP.ECS2048
                 bm.Enabled = value;
             }
         }
+
+        public static void SetBehavioursActive(this World world, bool value, params System.Type[] types)
+        {
+            foreach (var bm in world.BehaviourManagers)
+            {
+                foreach (var type in types)
+                {
+                    if(type == bm.GetType())
+                        bm.Enabled = value;
+                }
+            }
+        }
     }
 }

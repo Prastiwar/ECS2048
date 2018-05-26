@@ -28,3 +28,16 @@ public struct BlockData
     public int Length;
     public ComponentDataArray<Block> Block;
 }
+
+public struct BlockEntityData
+{
+    public int Length;
+    [ReadOnly] public ComponentDataArray<Block> Block;
+    [ReadOnly] public EntityArray Entity;
+}
+
+public struct ScoreData
+{
+    [ReadOnly] public ComponentDataArray<PlayerMarker> Marker;
+    public ComponentDataArray<ScoreHolder> ScoreHolder;
+}

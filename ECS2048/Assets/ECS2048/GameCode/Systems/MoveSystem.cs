@@ -10,6 +10,7 @@ namespace TP.ECS2048
     {
         [Inject] private BlockData blockData;
         [Inject] private PlayerData playerData;
+        [Inject] private ScoreData scoreData;
 
         public void Initialize()
         {
@@ -129,6 +130,10 @@ namespace TP.ECS2048
             {
                 blockToChange.Value *= 2;
                 blockToCompare.Value = 0;
+
+                var score = scoreData.ScoreHolder[0];
+                score.Value += blockToChange.Value;
+                scoreData.ScoreHolder[0] = score;
 
                 blockData.Block[blockToChange.SelfIndex] = blockToChange;
                 blockData.Block[blockToCompare.SelfIndex] = blockToCompare;

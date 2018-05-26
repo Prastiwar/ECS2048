@@ -14,8 +14,9 @@ namespace TP.ECS2048
     {
         [Inject] private PlayerData playerData;
         [Inject] private BlockData blockData;
+        [Inject] private BlockEntityData entityData;
         private int maxIterations;
-        
+
         public void Initialize(int maxIterations)
         {
             this.maxIterations = maxIterations;
@@ -25,7 +26,7 @@ namespace TP.ECS2048
         {
             if (playerData.Input[0].Direction != 0)
             {
-                int randValue = Random.Range(0, 1);
+                int randValue = Random.Range(0, 2);
                 int randIndex = Random.Range(0, blockData.Length);
                 int i = 0;
 
@@ -63,7 +64,8 @@ namespace TP.ECS2048
 
         private void GameOver()
         {
-            Debug.Log("GameOver");
+            Debug.Log("Game Over!");
+            Bootstrap.GameOver();
         }
     }
 }

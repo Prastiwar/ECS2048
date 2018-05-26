@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace TP.ECS2048
 {
+    [UpdateBefore(typeof(MoveSystem))]
     public class InputSystem : JobComponentSystem
     {
         [ComputeJobOptimization]

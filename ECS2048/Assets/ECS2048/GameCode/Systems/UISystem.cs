@@ -10,6 +10,7 @@ namespace TP.ECS2048
     public class UISystem : ComponentSystem
     {
         [Inject] private TextData data;
+        [Inject] private ScoreData pData;
 
         protected override void OnUpdate()
         {
@@ -29,13 +30,11 @@ namespace TP.ECS2048
                     Bootstrap.GameSettings.BlockTexts[index].text = data.Block[i].Value.ToString();
                 }
             }
-
+            Bootstrap.GameSettings.ScoreValueText.text = pData.ScoreHolder[0].Value.ToString();
         }
 
         public void Initialize(System.Action playNewGame)
         {
-            Bootstrap.GameSettings.PauseButton.onClick.AddListener(TogglePause);
-            Parallel.ForEach(Bootstrap.GameSettings.MenuButtons, btn => btn.onClick.AddListener(RestartWorld));
             Parallel.ForEach(Bootstrap.GameSettings.QuitButtons, btn => btn.onClick.AddListener(ExitGame));
             Bootstrap.GameSettings.PlayButton.onClick.AddListener(() => OnNewGame(playNewGame));
 
@@ -46,13 +45,8 @@ namespace TP.ECS2048
         {
             callNewGame();
             Bootstrap.GameSettings.MenuCanvas.gameObject.SetActive(false);
+            Bootstrap.GameSettings.GameOverCanvas.gameObject.SetActive(false);
             Bootstrap.GameSettings.HUDCanvas.gameObject.SetActive(true);
-        }
-
-        private void TogglePause()
-        {
-            Time.timeScale = Time.timeScale < 1 ? 1 : 0;
-            Bootstrap.GameSettings.PauseCanvas.SetActive(!Bootstrap.GameSettings.PauseCanvas.activeSelf);
         }
 
         private void RestartWorld()
@@ -65,7 +59,6 @@ namespace TP.ECS2048
         private void ActiveMenu()
         {
             Bootstrap.GameSettings.HUDCanvas.SetActive(false);
-            Bootstrap.GameSettings.PauseCanvas.SetActive(false);
             Bootstrap.GameSettings.GameOverCanvas.SetActive(false);
 
             Bootstrap.GameSettings.MenuCanvas.SetActive(true);

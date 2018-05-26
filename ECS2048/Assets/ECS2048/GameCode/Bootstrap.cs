@@ -5,6 +5,7 @@ using Unity.Transforms;
 using Unity.Collections;
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 namespace TP.ECS2048
 {
@@ -17,6 +18,9 @@ namespace TP.ECS2048
         public static EntityArchetype FloorArchetype { get; private set; }
 
         public static MeshInstanceRenderer BlockLook { get; private set; }
+        public static MeshInstanceRenderer BlockLook4 { get; private set; }
+        public static MeshInstanceRenderer BlockLook8 { get; private set; }
+        public static MeshInstanceRenderer BlockLook16 { get; private set; }
         public static MeshInstanceRenderer FloorLook { get; private set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -35,20 +39,28 @@ namespace TP.ECS2048
                 return;
 
             BlockLook = Utils.GetLookFromPrototype("BlockLook");
+            BlockLook4 = Utils.GetLookFromPrototype("BlockLook4");
+            BlockLook8 = Utils.GetLookFromPrototype("BlockLook8");
+            BlockLook16 = Utils.GetLookFromPrototype("BlockLook16");
             FloorLook = Utils.GetLookFromPrototype("FloorLook");
 
             World.Active.GetExistingManager<UISystem>().Initialize(NewGame);
             World.Active.GetExistingManager<SpawnSystem>().Initialize(GameSettings.GridSize.x * GameSettings.GridSize.y);
-            NewGame(); // dummy
         }
 
         public static void NewGame()
         {
             var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
+            GameSettings.MenuCanvas.gameObject.SetActive(false);
+            GameSettings.GameOverCanvas.gameObject.SetActive(false);
+            GameSettings.HUDCanvas.gameObject.SetActive(true);
+            entityManager.DestroyAllEntities();
+
             CreatePlayer(entityManager);
             CreateTextMeshPros();
             CreatePlane(entityManager);
+
             World.Active.SetBehavioursActive(true);
             Time.timeScale = 1;
             Delayed(); // it's hack
@@ -56,18 +68,30 @@ namespace TP.ECS2048
 
         public static async void Delayed()
         {
-            await System.Threading.Tasks.Task.Delay(25);
+            await System.Threading.Tasks.Task.Delay(30);
             World.Active.GetExistingManager<MoveSystem>().Initialize();
         }
 
         public static void GameOver()
         {
-            World.Active.SetBehavioursActive(false);
+            Time.timeScale = 0;
             GameSettings.GameOverCanvas.SetActive(true);
-            GameSettings.HUDCanvas.SetActive(false);
+            World.Active.SetBehavioursActive(false, typeof(SpawnSystem), typeof(InputSystem), typeof(SpawnSystem));
+            GameSettings.StartCoroutine(WaitGameOver());
         }
 
-        public static void CreateBlock(EntityManager em, float3 pos, int2 posIndex, int baseValue, Entity block = default(Entity))
+        private static IEnumerator WaitGameOver()
+        {
+            yield return new WaitForEndOfFrame();
+            while (!UnityEngine.Input.GetMouseButtonDown(0))
+            {
+                yield return null;
+            }
+            World.Active.SetBehavioursActive(false);
+            NewGame();
+        }
+
+        private static void CreateBlock(EntityManager em, float3 pos, int2 posIndex, int baseValue, Entity block = default(Entity))
         {
             if (block == default(Entity))
                 block = em.CreateEntity(BlockArchetype);
@@ -82,7 +106,7 @@ namespace TP.ECS2048
         private static void CreatePlayer(EntityManager em)
         {
             var player = em.CreateEntity(PlayerArchetype);
-            em.SetComponentData(player, new ScoreHolder() { Score = 0 });
+            em.SetComponentData(player, new ScoreHolder() { Value = 0 });
         }
 
         private static void CreatePlane(EntityManager em)
@@ -127,6 +151,12 @@ namespace TP.ECS2048
 
         private static void CreateTextMeshPros()
         {
+            for (int i = 0; i < GameSettings.BlockTexts.Count; i++)
+            {
+                Destroy(GameSettings.BlockTexts[i].gameObject);
+            }
+            GameSettings.BlockTexts.Clear();
+
             int length = GameSettings.GridSize.x * GameSettings.GridSize.y;
             for (int i = 0; i < length; i++)
             {
@@ -186,7 +216,7 @@ namespace TP.ECS2048
                 );
 
             BlockArchetype = entityManager.CreateArchetype(
-                position, transformMatrix, heading, input, blockTag, textTag
+                position, transformMatrix, heading, blockTag, textTag
                 );
 
             FloorArchetype = entityManager.CreateArchetype(

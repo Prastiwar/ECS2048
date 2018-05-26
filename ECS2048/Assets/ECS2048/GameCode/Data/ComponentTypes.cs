@@ -5,7 +5,7 @@ using UnityEngine;
 public struct PlayerMarker : IComponentData { }
 public struct TextUI : IComponentData { public int Index; }
 public struct FloorMarker : IComponentData { }
-public struct ScoreHolder : IComponentData { public int Score; }
+public struct ScoreHolder : IComponentData { public int Value; }
 public struct Input : IComponentData { public int Direction; }
 
 public struct MoveDirection
