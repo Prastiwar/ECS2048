@@ -2,20 +2,23 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-public static class Extensions
+namespace TP.ECS2048
 {
-    public static void DestroyAllEntities(this EntityManager manager)
+    public static class Extensions
     {
-        NativeArray<Entity> entitiesArray = manager.GetAllEntities();
-        manager.DestroyEntity(entitiesArray);
-        entitiesArray.Dispose();
-    }
-
-    public static void SetBehavioursActive(this World world, bool value)
-    {
-        foreach (var bm in world.BehaviourManagers)
+        public static void DestroyAllEntities(this EntityManager manager)
         {
-            bm.Enabled = value;
+            NativeArray<Entity> entitiesArray = manager.GetAllEntities();
+            manager.DestroyEntity(entitiesArray);
+            entitiesArray.Dispose();
+        }
+
+        public static void SetBehavioursActive(this World world, bool value)
+        {
+            foreach (var bm in world.BehaviourManagers)
+            {
+                bm.Enabled = value;
+            }
         }
     }
 }

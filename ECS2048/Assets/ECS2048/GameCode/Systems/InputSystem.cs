@@ -1,64 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Entities;
+﻿using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class InputSystem : JobComponentSystem
+namespace TP.ECS2048
 {
-    [ComputeJobOptimization]
-    struct Job : IJobProcessComponentData<Input>
+    public class InputSystem : JobComponentSystem
     {
-        public int moveDir;
-
-        public void Execute(ref Input pInput)
+        [ComputeJobOptimization]
+        struct Job : IJobProcessComponentData<Input>
         {
-            switch (moveDir)
+            public bool4 keysDown;
+
+            public void Execute(ref Input pInput)
             {
-                case MoveDirection.Up:
-                    pInput.Value.y = 1;
-                    break;
-                case MoveDirection.Left:
-                    pInput.Value.x = -1;
-                    break;
-                case MoveDirection.Down:
-                    pInput.Value.y = -1;
-                    break;
-                case MoveDirection.Right:
-                    pInput.Value.x = 1;
-                    break;
-                default:
-                    pInput.Value = 0;
-                    break;
+                int dir = 0;
+
+                if (keysDown.x)
+                    dir = MoveDirection.Up;
+                else if (keysDown.y)
+                    dir = MoveDirection.Down;
+                else if (keysDown.z)
+                    dir = MoveDirection.Left;
+                else if (keysDown.w)
+                    dir = MoveDirection.Right;
+
+                pInput.Direction = dir;
             }
         }
-    }
 
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
-    {
-        var job = new Job() {
-            //moveDir = 
-            moveDir = GetMoveDirection(UnityEngine.Input.inputString)
-        };
-        return job.Schedule(this, 2, inputDeps);
-    }
-
-    private int GetMoveDirection(string inputString)
-    {
-        // use keycode instead of string
-        switch (inputString)
+        protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            case "w":
-                return MoveDirection.Up;
-            case "a":
-                return MoveDirection.Left;
-            case "s":
-                return MoveDirection.Down;
-            case "d":
-                return MoveDirection.Right;
-            default:
-                return -1;
+            var job = new Job() {
+                keysDown = new bool4(UnityEngine.Input.GetKeyDown(KeyCode.W),
+                                     UnityEngine.Input.GetKeyDown(KeyCode.S),
+                                     UnityEngine.Input.GetKeyDown(KeyCode.A),
+                                     UnityEngine.Input.GetKeyDown(KeyCode.D))
+            };
+            return job.Schedule(this, 4, inputDeps);
         }
     }
 }

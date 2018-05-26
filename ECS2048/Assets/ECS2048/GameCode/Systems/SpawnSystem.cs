@@ -7,22 +7,63 @@ using Unity.Transforms;
 using System.Linq;
 using UnityEngine;
 
-[UpdateAfter(typeof(MoveSystem))]
-public class SpawnSystem : ComponentSystem
+namespace TP.ECS2048
 {
-    [Inject] private PlayerData playerData;
-
-    protected override void OnUpdate()
+    [UpdateAfter(typeof(MoveSystem))]
+    public class SpawnSystem : ComponentSystem
     {
-        if (playerData.input[0].Value.x != 0 || playerData.input[0].Value.y != 0)
+        [Inject] private PlayerData playerData;
+        [Inject] private BlockData blockData;
+        private int maxIterations;
+        
+        public void Initialize(int maxIterations)
         {
-            var input = playerData.input[0];
+            this.maxIterations = maxIterations;
+        }
 
-            //int randIndex = Random.Range(0, length);
-            //Bootstrap.CreateBlock(EntityManager, freeFloor.ElementAt(randIndex).GridIndex);
+        protected override void OnUpdate()
+        {
+            if (playerData.Input[0].Direction != 0)
+            {
+                int randValue = Random.Range(0, 1);
+                int randIndex = Random.Range(0, blockData.Length);
+                int i = 0;
 
-            // there is no free space - gameover probably
+                while (blockData.Block[randIndex].Value != 0)
+                {
+                    if (i >= maxIterations)
+                    {
+                        if (!TryGetFreeIndex(ref randIndex))
+                        {
+                            GameOver();
+                            break;
+                        }
+                    }
+                    randIndex = Random.Range(0, blockData.Length);
+                    i++;
+                }
+                var newBlock = blockData.Block[randIndex];
+                newBlock.Value = randValue == 0 ? 2 : 4;
+                blockData.Block[randIndex] = newBlock;
+            }
+        }
 
+        private bool TryGetFreeIndex(ref int randIndex)
+        {
+            for (int i = 0; i < blockData.Length; i++)
+            {
+                if (blockData.Block[i].Value == 0)
+                {
+                    randIndex = i;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void GameOver()
+        {
+            Debug.Log("GameOver");
         }
     }
 }

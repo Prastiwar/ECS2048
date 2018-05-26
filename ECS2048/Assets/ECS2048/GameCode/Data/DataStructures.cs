@@ -6,21 +6,21 @@ using UnityEngine;
 public struct FloorData
 {
     public int Length;
-    public ComponentDataArray<FloorMarker> marker;
+    public ComponentDataArray<FloorMarker> Marker;
 }
 
 public struct TextData
 {
     public int Length;
-    [ReadOnly] public ComponentDataArray<TextUI> text;
-    [ReadOnly] public ComponentDataArray<Block> block;
-    [ReadOnly] public ComponentDataArray<Position> position;
+    [ReadOnly] public ComponentDataArray<TextUI> Text;
+    [ReadOnly] public ComponentDataArray<Block> Block;
+    [ReadOnly] public ComponentDataArray<Position> Position;
 }
 
 public struct PlayerData
 {
-    [ReadOnly] public ComponentDataArray<PlayerMarker> marker;
-    public ComponentDataArray<Input> input;
+    [ReadOnly] public ComponentDataArray<PlayerMarker> Marker;
+    public ComponentDataArray<Input> Input;
 }
 
 public struct BlockData

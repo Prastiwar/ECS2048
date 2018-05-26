@@ -6,14 +6,14 @@ public struct PlayerMarker : IComponentData { }
 public struct TextUI : IComponentData { public int Index; }
 public struct FloorMarker : IComponentData { }
 public struct ScoreHolder : IComponentData { public int Score; }
-public struct Input : IComponentData { public int2 Value; }
+public struct Input : IComponentData { public int Direction; }
 
 public struct MoveDirection
 {
-    public const int Up = 0;
-    public const int Left = 1;
-    public const int Down = 2;
-    public const int Right = 3;
+    public const int Up = 2;
+    public const int Left = -1;
+    public const int Down = -2;
+    public const int Right = 1;
 }
 
 public struct Block : IComponentData
