@@ -6,6 +6,7 @@ using Unity.Mathematics;
 
 namespace TP.ECS2048
 {
+    [UpdateAfter(typeof(SpawnSystem))]
     public class HideBlockSystem : JobComponentSystem
     {
         [ComputeJobOptimization]

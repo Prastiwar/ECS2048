@@ -23,6 +23,7 @@ public struct Block : IComponentData
     public int2 NextBlockArrayIndex;
     public int2 PrevBlockArrayIndex;
     public Entity Entity;
+    public bool1 Changed;
 
     public static Block Null {
         get {

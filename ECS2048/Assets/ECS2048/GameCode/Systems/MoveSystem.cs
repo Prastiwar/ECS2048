@@ -132,6 +132,9 @@ namespace TP.ECS2048
                 score.Value += blockToChange.Value;
                 scoreData.ScoreHolder[0] = score;
 
+                blockToChange.Changed = true;
+                blockToCompare.Changed = true;
+
                 blockData.Block[blockToChange.SelfArrayIndex] = blockToChange;
                 blockData.Block[blockToCompare.SelfArrayIndex] = blockToCompare;
                 return true;
@@ -146,6 +149,8 @@ namespace TP.ECS2048
                 blockToCheck.Value = blockToMove.Value;
                 blockToMove.Value = 0;
 
+                blockToCheck.Changed = true;
+                blockToMove.Changed = true;
                 blockData.Block[blockToCheck.SelfArrayIndex] = blockToCheck;
                 blockData.Block[blockToMove.SelfArrayIndex] = blockToMove;
 

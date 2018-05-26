@@ -6,32 +6,40 @@ using Unity.Rendering;
 
 namespace TP.ECS2048
 {
-    [UpdateAfter(typeof(SpawnSystem))]
+    public class LookBarrier : BarrierSystem { }
+
+    //[UpdateAfter(typeof(SpawnSystem))]
     public class BlockLookSystem : ComponentSystem
     {
         [Inject] private BlockEntityData data;
+        [Inject] private LookBarrier barrier;
 
         protected override void OnUpdate()
         {
             //for (int i = 0; i < data.Length; i++)
             //{
-                //var entity = data.Entity[i];
-                //if (data.Block[i].Value == 2)
-                //{
-                //    PostUpdateCommands.SetSharedComponent(entity, Bootstrap.BlockLook);
-                //}
-                //else if (data.Block[i].Value == 4)
-                //{
-                //    PostUpdateCommands.SetSharedComponent(entity, Bootstrap.BlockLook4);
-                //}
-                //else if (data.Block[i].Value == 8)
-                //{
-                //    PostUpdateCommands.SetSharedComponent(entity, Bootstrap.BlockLook8);
-                //}
-                //else if (data.Block[i].Value == 16)
-                //{
-                //    PostUpdateCommands.SetSharedComponent(entity, Bootstrap.BlockLook16);
-                //}
+            //    var block = data.Block[i];
+            //    if (!block.Changed)
+            //        continue;
+
+            //    block.Changed = false;
+            //    data.Block[i] = block;
+            //    var entity = data.Entity[i];
+            //    int lookIndex = 0;
+            //    int length = Bootstrap.BlockLooks.Count;
+
+            //    for (int j = 1; lookIndex < length; j++)
+            //    {
+            //        if ((j * 2).IsPowOf2())
+            //        {
+            //            if (data.Block[i].Value == j)
+            //            {
+            //                PostUpdateCommands.SetSharedComponent(entity, Bootstrap.BlockLooks[lookIndex]); // bugs everything
+            //                break;
+            //            }
+            //            lookIndex++;
+            //        }
+            //    }
             //}
         }
 

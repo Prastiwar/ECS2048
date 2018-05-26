@@ -6,6 +6,7 @@ using Unity.Collections;
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace TP.ECS2048
 {
@@ -17,10 +18,7 @@ namespace TP.ECS2048
         public static EntityArchetype BlockArchetype { get; private set; }
         public static EntityArchetype FloorArchetype { get; private set; }
 
-        public static MeshInstanceRenderer BlockLook { get; private set; }
-        public static MeshInstanceRenderer BlockLook4 { get; private set; }
-        public static MeshInstanceRenderer BlockLook8 { get; private set; }
-        public static MeshInstanceRenderer BlockLook16 { get; private set; }
+        public static List<MeshInstanceRenderer> BlockLooks { get; private set; }
         public static MeshInstanceRenderer FloorLook { get; private set; }
 
         private static WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
@@ -39,11 +37,12 @@ namespace TP.ECS2048
             GameSettings = FindObjectOfType<GameSettings>()?.GetComponent<GameSettings>();
             if (!GameSettings)
                 return;
-
-            BlockLook = Utils.GetLookFromPrototype("BlockLook");
-            BlockLook4 = Utils.GetLookFromPrototype("BlockLook4");
-            BlockLook8 = Utils.GetLookFromPrototype("BlockLook8");
-            BlockLook16 = Utils.GetLookFromPrototype("BlockLook16");
+            BlockLooks = new List<MeshInstanceRenderer>() {
+                Utils.GetLookFromPrototype("BlockLook"),
+                Utils.GetLookFromPrototype("BlockLook4"),
+                Utils.GetLookFromPrototype("BlockLook8"),
+                Utils.GetLookFromPrototype("BlockLook16")
+            };
             FloorLook = Utils.GetLookFromPrototype("FloorLook");
 
             World.Active.GetExistingManager<UISystem>().Initialize(NewGame);
@@ -102,7 +101,7 @@ namespace TP.ECS2048
             em.SetComponentData(block, new Heading { Value = new float3(0.0f, 1.0f, 0) });
             em.SetComponentData(block, new TextUI { Index = GetFreeTextMeshIndex() });
             em.SetComponentData(block, new Block { PosIndex = posIndex, Value = baseValue, Entity = block });
-            em.AddSharedComponentData(block, BlockLook);
+            em.AddSharedComponentData(block, BlockLooks[0]);
         }
 
         private static void CreatePlayer(EntityManager em)

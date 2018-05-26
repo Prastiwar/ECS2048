@@ -32,5 +32,10 @@ namespace TP.ECS2048
                 }
             }
         }
+
+        public static bool IsPowOf2(this int num)
+        {
+            return num != 0 && (num & (num - 1)) == 0;
+        }
     }
 }

@@ -26,7 +26,7 @@ public struct BlockData
 public struct BlockEntityData
 {
     public int Length;
-    [ReadOnly] public ComponentDataArray<Block> Block;
+    public ComponentDataArray<Block> Block;
     [ReadOnly] public EntityArray Entity;
 }
 
