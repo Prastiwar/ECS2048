@@ -3,12 +3,6 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 
-public struct FloorData
-{
-    public int Length;
-    public ComponentDataArray<FloorMarker> Marker;
-}
-
 public struct TextData
 {
     public int Length;
@@ -19,7 +13,7 @@ public struct TextData
 
 public struct PlayerData
 {
-    [ReadOnly] public ComponentDataArray<PlayerMarker> Marker;
+    [ReadOnly] public ComponentDataArray<Player> Marker;
     public ComponentDataArray<Input> Input;
 }
 
@@ -38,6 +32,6 @@ public struct BlockEntityData
 
 public struct ScoreData
 {
-    [ReadOnly] public ComponentDataArray<PlayerMarker> Marker;
+    [ReadOnly] public ComponentDataArray<Player> Marker;
     public ComponentDataArray<ScoreHolder> ScoreHolder;
 }

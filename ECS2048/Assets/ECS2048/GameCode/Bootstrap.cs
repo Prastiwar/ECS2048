@@ -23,6 +23,8 @@ namespace TP.ECS2048
         public static MeshInstanceRenderer BlockLook16 { get; private set; }
         public static MeshInstanceRenderer FloorLook { get; private set; }
 
+        private static WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void InitializeBeforeScene()
         {
@@ -63,13 +65,7 @@ namespace TP.ECS2048
 
             World.Active.SetBehavioursActive(true);
             Time.timeScale = 1;
-            Delayed(); // it's hack
-        }
-
-        public static async void Delayed()
-        {
-            await System.Threading.Tasks.Task.Delay(30);
-            World.Active.GetExistingManager<MoveSystem>().Initialize();
+            GameSettings.StartCoroutine(InitializeMoveSystem());
         }
 
         public static void GameOver()
@@ -77,18 +73,24 @@ namespace TP.ECS2048
             Time.timeScale = 0;
             GameSettings.GameOverCanvas.SetActive(true);
             World.Active.SetBehavioursActive(false, typeof(SpawnSystem), typeof(InputSystem), typeof(SpawnSystem));
-            GameSettings.StartCoroutine(WaitGameOver());
+            GameSettings.StartCoroutine(WaitForPlayAgain());
         }
 
-        private static IEnumerator WaitGameOver()
+        private static IEnumerator WaitForPlayAgain()
         {
-            yield return new WaitForEndOfFrame();
+            yield return waitForEndOfFrame;
             while (!UnityEngine.Input.GetMouseButtonDown(0))
             {
                 yield return null;
             }
             World.Active.SetBehavioursActive(false);
             NewGame();
+        }
+
+        private static IEnumerator InitializeMoveSystem()
+        {
+            yield return waitForEndOfFrame;
+            World.Active.GetExistingManager<MoveSystem>().Initialize();
         }
 
         private static void CreateBlock(EntityManager em, float3 pos, int2 posIndex, int baseValue, Entity block = default(Entity))
@@ -99,7 +101,7 @@ namespace TP.ECS2048
             em.SetComponentData(block, new Position { Value = pos });
             em.SetComponentData(block, new Heading { Value = new float3(0.0f, 1.0f, 0) });
             em.SetComponentData(block, new TextUI { Index = GetFreeTextMeshIndex() });
-            em.SetComponentData(block, new Block { PosIndex = posIndex, Value = baseValue });
+            em.SetComponentData(block, new Block { PosIndex = posIndex, Value = baseValue, Entity = block });
             em.AddSharedComponentData(block, BlockLook);
         }
 
@@ -111,11 +113,11 @@ namespace TP.ECS2048
 
         private static void CreatePlane(EntityManager em)
         {
+            int2 randIndex = GetRandomPosOnGrid();
+            int2 randIndex2 = GetRandomPosOnGrid();
             Heading defaultHeading = new Heading() { Value = new float3(0.0f, 1.0f, 0) };
             NativeArray<Entity> newEntities = new NativeArray<Entity>(GameSettings.GridSize.x * GameSettings.GridSize.y, Allocator.Temp);
             em.CreateEntity(FloorArchetype, newEntities);
-            int2 randIndex = GetRandomPosOnGrid();
-            int2 randIndex2 = GetRandomPosOnGrid();
 
             int index = 0;
             for (int x = 0; x < GameSettings.GridSize.x; x++)
@@ -127,18 +129,19 @@ namespace TP.ECS2048
                     var gapY = y * GameSettings.GridGap - (GameSettings.GridSize.y / 2);
                     float3 pos = new float3(x + gapX, y + gapY, 0);
                     int2 gridIndex = new int2(x, y);
+
                     em.SetComponentData(entity, new Position { Value = pos });
-                    em.SetComponentData(entity, default(FloorMarker));
                     em.SetComponentData(entity, defaultHeading);
                     em.AddSharedComponentData(entity, FloorLook);
-                    CreateBlock(em, pos, gridIndex, ShouldMakeStartBlock(gridIndex, randIndex, randIndex2) ? 2 : 0);
+
+                    CreateBlock(em, pos, gridIndex, ShouldMakeItStartBlock(gridIndex, randIndex, randIndex2) ? 2 : 0);
                     index++;
                 }
             }
             newEntities.Dispose();
         }
 
-        private static bool ShouldMakeStartBlock(int2 actualIndex, params int2[] randomIndexes)
+        private static bool ShouldMakeItStartBlock(int2 actualIndex, params int2[] randomIndexes)
         {
             int length = randomIndexes.Length;
             for (int i = 0; i < length; i++)
@@ -200,12 +203,11 @@ namespace TP.ECS2048
         private static void SetArchetypes(EntityManager entityManager)
         {
             var scoreHolder = ComponentType.Create<ScoreHolder>();
-            var textTag = ComponentType.Create<TextUI>();
+            var textUI = ComponentType.Create<TextUI>();
             var input = ComponentType.Create<Input>();
 
-            var playerTag = ComponentType.Create<PlayerMarker>();
+            var playerTag = ComponentType.Create<Player>();
             var blockTag = ComponentType.Create<Block>();
-            var floorTag = ComponentType.Create<FloorMarker>();
 
             var heading = ComponentType.Create<Heading>();
             var position = ComponentType.Create<Position>();
@@ -216,11 +218,11 @@ namespace TP.ECS2048
                 );
 
             BlockArchetype = entityManager.CreateArchetype(
-                position, transformMatrix, heading, blockTag, textTag
+                position, transformMatrix, heading, blockTag, textUI
                 );
 
             FloorArchetype = entityManager.CreateArchetype(
-                position, transformMatrix, heading, floorTag
+                position, transformMatrix, heading
                 );
         }
 
