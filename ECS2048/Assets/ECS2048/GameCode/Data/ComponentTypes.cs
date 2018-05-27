@@ -1,5 +1,6 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using UnityEngine;
 
 public struct Player : IComponentData { }
@@ -22,7 +23,6 @@ public struct Block : IComponentData
     public int2 PosIndex;
     public int2 NextBlockArrayIndex;
     public int2 PrevBlockArrayIndex;
-    public Entity Entity;
     public bool1 Changed;
 
     public static Block Null {

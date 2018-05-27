@@ -10,6 +10,9 @@ namespace TP.ECS2048
     {
         public List<TextMeshPro> BlockTexts = new List<TextMeshPro>();
 
+        [Header("Block Look")]
+        public Material MaterialToCopy;
+        public List<Color> BlockColors = new List<Color>();
         [Header("Hud References")]
         public TextMeshProUGUI ScoreValueText;
         [Header("Canvas References")]

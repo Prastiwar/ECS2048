@@ -19,18 +19,20 @@ namespace TP.ECS2048
                 return result;
             }
             Debug.LogWarning($"{prototypeName} was not found, creating new renderer");
-            return NewMeshInstanceRenderer();
+            return NewMeshInstanceRenderer(PrimitiveType.Cube);
         }
 
-        private static MeshInstanceRenderer NewMeshInstanceRenderer()
+        public static MeshInstanceRenderer NewMeshInstanceRenderer(PrimitiveType primitiveType)
         {
-            Material newMaterial = new Material(Shader.Find("Standard")) { enableInstancing = true };
+            var cube = GameObject.CreatePrimitive(primitiveType);
+            Material newMaterial = new Material(Bootstrap.GameSettings.MaterialToCopy) { enableInstancing = true };
             MeshInstanceRenderer renderer = new MeshInstanceRenderer {
                 castShadows = UnityEngine.Rendering.ShadowCastingMode.Off,
                 receiveShadows = false,
-                mesh = new Mesh(),
+                mesh = cube.GetComponent<MeshFilter>().mesh,
                 material = newMaterial
             };
+            Object.Destroy(cube);
             return renderer;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -23,11 +24,11 @@ public struct BlockData
     public ComponentDataArray<Block> Block;
 }
 
-public struct BlockEntityData
+public struct BlockLookData
 {
     public int Length;
     public ComponentDataArray<Block> Block;
-    [ReadOnly] public EntityArray Entity;
+    [ReadOnly] public SharedComponentDataArray<MeshInstanceRenderer> Look;
 }
 
 public struct ScoreData

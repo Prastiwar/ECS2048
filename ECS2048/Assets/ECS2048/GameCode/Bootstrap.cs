@@ -17,8 +17,7 @@ namespace TP.ECS2048
         public static EntityArchetype PlayerArchetype { get; private set; }
         public static EntityArchetype BlockArchetype { get; private set; }
         public static EntityArchetype FloorArchetype { get; private set; }
-
-        public static List<MeshInstanceRenderer> BlockLooks { get; private set; }
+        
         public static MeshInstanceRenderer FloorLook { get; private set; }
 
         private static WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
@@ -37,13 +36,6 @@ namespace TP.ECS2048
             GameSettings = FindObjectOfType<GameSettings>()?.GetComponent<GameSettings>();
             if (!GameSettings)
                 return;
-            BlockLooks = new List<MeshInstanceRenderer>() {
-                Utils.GetLookFromPrototype("BlockLook"),
-                Utils.GetLookFromPrototype("BlockLook4"),
-                Utils.GetLookFromPrototype("BlockLook8"),
-                Utils.GetLookFromPrototype("BlockLook16"),
-                Utils.GetLookFromPrototype("BlockLook32")
-            };
             FloorLook = Utils.GetLookFromPrototype("FloorLook");
 
             World.Active.GetExistingManager<UISystem>().Initialize(NewGame);
@@ -101,8 +93,8 @@ namespace TP.ECS2048
             em.SetComponentData(block, new Position { Value = pos });
             em.SetComponentData(block, new Heading { Value = new float3(0.0f, 1.0f, 0) });
             em.SetComponentData(block, new TextUI { Index = GetFreeTextMeshIndex() });
-            em.SetComponentData(block, new Block { PosIndex = posIndex, Value = baseValue, Entity = block });
-            em.AddSharedComponentData(block, BlockLooks[0]);
+            em.SetComponentData(block, new Block { PosIndex = posIndex, Value = baseValue, Changed = true });
+            em.AddSharedComponentData(block, Utils.NewMeshInstanceRenderer(PrimitiveType.Cube));
         }
 
         private static void CreatePlayer(EntityManager em)
@@ -189,6 +181,7 @@ namespace TP.ECS2048
             textMesh.fontSize = 5;
             textMesh.alignment = TextAlignmentOptions.Center;
             textMesh.margin = Vector4.zero;
+            textMesh.color = Color.white;
             newTextObj.SetActive(false);
             return textMesh;
         }

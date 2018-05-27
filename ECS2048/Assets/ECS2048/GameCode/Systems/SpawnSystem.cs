@@ -39,6 +39,7 @@ namespace TP.ECS2048
                 var newBlock = blockData.Block[randIndex];
                 int startValue = randValue == 0 ? 2 : 4;
                 newBlock.Value = startValue;
+                newBlock.Changed = true;
                 blockData.Block[randIndex] = newBlock;
             }
         }
