@@ -79,6 +79,28 @@ namespace TP.ECS2048
             }
         }
 
+        public bool NoMoreMoves()
+        {
+            // check blocks on X
+            for (int i = 0; i < blockData.Length; i++)
+            {
+                if (!TryGetBlocks(false, i, out Block block, out Block prevBlock, out Block nextBlock))
+                    return false;
+                if (block.Value == prevBlock.Value || block.Value == nextBlock.Value)
+                    return false;
+            }
+
+            // check blocks on Y
+            for (int i = 0; i < blockData.Length; i++)
+            {
+                if (!TryGetBlocks(true, i, out Block block, out Block prevBlock, out Block nextBlock))
+                    return false;
+                if (block.Value == prevBlock.Value || block.Value == nextBlock.Value)
+                    return false;
+            }
+            return true;
+        }
+
         private int2 GetBlockIndex(bool lookForNext, int2 checkedPos, int checkedIndex)
         {
             int2 index = -1;

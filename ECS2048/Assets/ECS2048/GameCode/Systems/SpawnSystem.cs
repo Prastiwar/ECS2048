@@ -8,6 +8,7 @@ namespace TP.ECS2048
     {
         [Inject] private PlayerData playerData;
         [Inject] private BlockData blockData;
+        [Inject] private MoveSystem moveSystem;
         private int maxIterations;
 
         internal void Initialize(int maxIterations)
@@ -29,8 +30,9 @@ namespace TP.ECS2048
                     {
                         if (!TryGetFreeIndex(ref randIndex))
                         {
-                            GameOver();
-                            break;
+                            if (moveSystem.NoMoreMoves())
+                                GameOver();
+                            return;
                         }
                     }
                     randIndex = Random.Range(0, blockData.Length);
