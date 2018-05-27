@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TP.ECS2048
 {
-    [UpdateAfter(typeof(BlockLookSystem))]
+    [UpdateAfter(typeof(HideBlockSystem))]
     public class InputSystem : JobComponentSystem
     {
         [ComputeJobOptimization]

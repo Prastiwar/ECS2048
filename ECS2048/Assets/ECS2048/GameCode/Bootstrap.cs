@@ -41,7 +41,8 @@ namespace TP.ECS2048
                 Utils.GetLookFromPrototype("BlockLook"),
                 Utils.GetLookFromPrototype("BlockLook4"),
                 Utils.GetLookFromPrototype("BlockLook8"),
-                Utils.GetLookFromPrototype("BlockLook16")
+                Utils.GetLookFromPrototype("BlockLook16"),
+                Utils.GetLookFromPrototype("BlockLook32")
             };
             FloorLook = Utils.GetLookFromPrototype("FloorLook");
 

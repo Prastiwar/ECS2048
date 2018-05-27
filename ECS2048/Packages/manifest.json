@@ -1,13 +1,30 @@
 {
-	"dependencies": {
-		"com.unity.incrementalcompiler": "0.0.38",
-		"com.unity.entities": "0.0.12-preview.1",
-		"com.unity.burst": "0.2.4-preview.4"
-},
-	"registry": "https://staging-packages.unity.com",
-	"testables": [
-		"com.unity.collections",
-		"com.unity.entities",
-		"com.unity.jobs"
-	]
+  "dependencies": {
+    "com.unity.ads": "exclude",
+    "com.unity.burst": "0.2.4-preview.4",
+    "com.unity.entities": "0.0.12-preview.1",
+    "com.unity.incrementalcompiler": "0.0.38",
+    "com.unity.package-manager-ui": "1.9.9",
+    "com.unity.purchasing": "exclude",
+    "com.unity.textmeshpro": "1.2.3",
+    "com.unity.modules.cloth": "exclude",
+    "com.unity.modules.director": "exclude",
+    "com.unity.modules.particleslegacy": "exclude",
+    "com.unity.modules.screencapture": "exclude",
+    "com.unity.modules.terrain": "exclude",
+    "com.unity.modules.terrainphysics": "exclude",
+    "com.unity.modules.tilemap": "exclude",
+    "com.unity.modules.umbra": "exclude",
+    "com.unity.modules.vehicles": "exclude",
+    "com.unity.modules.video": "exclude",
+    "com.unity.modules.vr": "exclude",
+    "com.unity.modules.wind": "exclude",
+    "com.unity.modules.xr": "exclude"
+  },
+  "registry": "https://staging-packages.unity.com",
+  "testables": [
+    "com.unity.collections",
+    "com.unity.entities",
+    "com.unity.jobs"
+  ]
 }

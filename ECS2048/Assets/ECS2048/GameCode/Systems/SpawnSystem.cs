@@ -1,10 +1,4 @@
-﻿using Unity.Collections;
-using Unity.Entities;
-using Unity.Jobs;
-using Unity.Mathematics;
-using Unity.Rendering;
-using Unity.Transforms;
-using System.Linq;
+﻿using Unity.Entities;
 using UnityEngine;
 
 namespace TP.ECS2048
